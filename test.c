@@ -15,7 +15,7 @@ void format_print(float val);
 void small_print(double val);
 void big_print(double val);
 void calc(DT table);
-
+void coeff_rel(DT table);
 
 
 void calc(DT table)
@@ -28,6 +28,7 @@ void calc(DT table)
         table->values[4][i]=x*x*y;
         table->values[5][i]=x*x*x;
         table->values[6][i]=x*x*x*x;        
+        table->values[7][i]=y*y;
         table->values[0][table->size]+=x;
         table->values[1][table->size]+=y;
         table->values[2][table->size]+=table->values[2][i];
@@ -35,6 +36,7 @@ void calc(DT table)
         table->values[4][table->size]+=table->values[4][i];
         table->values[5][table->size]+=table->values[5][i];
         table->values[6][table->size]+=table->values[6][i];
+        table->values[7][table->size]+=table->values[7][i];
     }
 }
 
@@ -103,7 +105,7 @@ void input_table(DT table)
     printf("Enter no of entries:");
     scanf("%d", &(table->size));
     table->values = (float **)malloc(sizeof(float *) * 7);
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < 8; i++)
         table->values[i] = (float *)calloc(1 + table->size, sizeof(float));
     printf("Enter values of x\n");
     for (int i = 0; i < table->size; i++)
@@ -115,22 +117,32 @@ void input_table(DT table)
 
 void print_table(DT table)
 {
-    printf("\n\tX\t\tY\t\tXY\t\tX^2\t\t(X^2)Y\t\tX^3\t\tX^4\n");
+    printf("\n\tX\t\tY\t\tXY\t\tX^2\t\t(X^2)Y\t\tX^3\t\tX^4\t\tY^2\n");
     for (int j = 0; j < table->size; j++)
     {
         printf("\t");
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < 8; i++)
         {
             format_print(table->values[i][j]);
         }
         printf("\n");
     }
     printf("\nsum\t");
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < 8; i++)
     {
         format_print(table->values[i][table->size]);
     }
 }
+
+void coeff_rel(DT table)
+{
+    float value;
+    int n=table->size;
+    float x=table->values[0][n],y=table->values[1][n],xy=table->values[2][n],x2=table->values[3][n],y2=table->values[7][n];
+    value=(n*xy - x*y)/(sqrt((n*x2-x*x)*(n*y2-y*y)));
+    printf("\nCoeff:%f",value);
+}
+
 
 int main()
 {
@@ -139,4 +151,5 @@ int main()
     input_table(table);
     calc(table);
     print_table(table);
+    coeff_rel(table);
 }
